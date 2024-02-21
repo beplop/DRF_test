@@ -10,6 +10,10 @@ class LettersViewSet(viewsets.ModelViewSet):
     serializer_class = LettersSerializer
 
 
+# class PackagesViewSet(viewsets.ModelViewSet):
+#     queryset = Packages.objects.all()
+#     serializer_class = PackagesSerializer
+
 class PackagesViewSet(viewsets.ViewSet):
     def list(self, request):
         queryset = Packages.objects.all()
@@ -23,7 +27,14 @@ class PackagesViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
-        queryset = Packages.objects.get(pk=pk)
+        if not pk:
+            return Response({"error": "Method Retrieve not allowed"})
+
+        try:
+            queryset = Packages.objects.get(pk=pk)
+        except:
+            return Response({"error": "Object does not exists"})
+
         return Response(PackagesSerializer(queryset).data)
 
     def update(self, request, *args, **kwargs):
